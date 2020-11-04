@@ -1,0 +1,66 @@
+import requests
+from urllib.parse import urlencode, urljoin
+from pprint import pprint
+# ____________________ 1-st stage: we get token ____________________________________________________
+#
+# oauth_api_base_url = 'https://oauth.vk.com/authorize'
+# APP_ID = 7649081
+# redirect_uri = 'https://oauth.vk.com/blank.html'
+# scope = 'friends'
+#
+# oauth_params = {
+#     'redirect_uri': redirect_uri,
+#     'scope': scope,
+#     'response_type': 'token',
+#     'client_id': APP_ID
+# }
+#
+# print('?'.join([oauth_api_base_url, urlencode(oauth_params)]))
+
+# ____________________  2-nd stage: we already have the token  ____________________________________________________
+TOKEN = '6e2074a490e967caf398d2c4be2d51e40c437a3b9653b09681505f9fbccc5bc848668d59e6058eae28d7c'
+API_BASE_URL = 'https://api.vk.com/method/'
+V = '5.21'
+
+class VKUser_1:
+    def __init__(self, token=TOKEN, version=V):
+        self.token = token
+        self.version = version
+
+    def count_of_all_friends(self):
+        sheet_on_demand_vk = urljoin(API_BASE_URL, 'friends.search')
+        response = requests.get(sheet_on_demand_vk, params={
+            'access_token': self.token,
+            'v': self.version,
+            'user_id': 280935159,
+        })
+        pprint(response.json())
+        # s = int(response.json()['response']['count'])
+        # return s
+
+    def get_full_list_friends(self):
+        status_common_lst = urljoin(API_BASE_URL, 'friends.search')
+        response = requests.get(status_common_lst, params={
+            'access_token': self.token,
+            'v': self.version,
+            'user_id': 280935159,
+            'count': a.count_of_all_friends()
+        })
+        pprint(response.json()['response']['items'])
+        # check accurate count of friends
+        counter = 0
+        for i in response.json()['response']['items']:
+            counter +=1
+        print(counter)
+
+        # set_1 = set()
+        # for i in response.json()['response']['items']:
+        #     set_1.add(i['id'])
+        # return set_1
+
+a = VKUser_1()
+a.get_full_list_friends()
+
+
+
+
